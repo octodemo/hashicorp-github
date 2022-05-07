@@ -1,0 +1,50 @@
+name: tfsec
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ./terraform
+  pull_request:
+    paths:
+    - ./terraform
+jobs:
+  tfsec-pr-comment:
+    if: github.event_name == 'pull_request'
+    name: tfsec-pr-comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          # bug: https://github.com/aquasecurity/tfsec-pr-commenter-action/pull/63
+          # working_directory: ./terraform
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+  tfsec-sarif:
+    if: github.event_name == 'push'
+    name: tfsec sarif report
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: tfsec
+        uses: aquasecurity/tfsec-sarif-action@v0.1.0
+        with:
+          sarif_file: tfsec.sarif
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: tfsec.sarif
