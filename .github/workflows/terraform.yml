@@ -73,6 +73,38 @@ jobs:
               body: output
             })
 
+      # Generate Terraform plan report using GitHub's new Job Summaries feature:
+      # https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
+      # 
+      # NOTE: https://github.com/actions/github-script/pull/263
+      # once upstream is updated replace this custom action with the official one above
+      - uses: smaeda-ks/github-script@update-actions-core
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `\n#### Terraform Format and Style 🖌 \`${{ steps.fmt.outcome }}\`\n
+            #### Terraform Initialization ⚙️ \`${{ steps.init.outcome }}\`\n
+            #### Terraform Validation 🤖 \`${{ steps.validate.outcome }}\`\n
+            #### Terraform Plan 📖 \`${{ steps.plan.outcome }}\`\n
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`terraform\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            await core.summary
+              .addHeading('Terraform plan report')
+              .addRaw(output)
+              .write()
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
