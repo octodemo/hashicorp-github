@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - ./terraform
+      - terraform/**
   pull_request:
     paths:
-    - ./terraform
+    - terraform/**
 jobs:
   terraform:
     name: Terraform

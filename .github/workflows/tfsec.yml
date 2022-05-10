@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - ./terraform
+      - terraform/**
   pull_request:
     paths:
-    - ./terraform
+    - terraform/**
 jobs:
   tfsec-pr-comment:
     if: github.event_name == 'pull_request'
