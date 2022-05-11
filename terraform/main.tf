@@ -27,7 +27,7 @@ resource "aws_kms_key" "mykey" {
 }
 
 resource "aws_s3_bucket" "gh-actions-demo" {
-  bucket = "gh-actions-demo-bar"
+  bucket = "gh-actions-demo-foo"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "gh-actions-demo" {
