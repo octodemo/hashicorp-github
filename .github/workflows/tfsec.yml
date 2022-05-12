@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - terraform/**
+      - terraform-github-actions-demo/**
   pull_request:
     paths:
-    - terraform/**
+    - terraform-github-actions-demo/**
 jobs:
   tfsec-pr-comment:
     if: github.event_name == 'pull_request'
@@ -22,7 +22,7 @@ jobs:
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           # bug: https://github.com/aquasecurity/tfsec-pr-commenter-action/pull/63
-          # working_directory: ./terraform
+          # working_directory: ./terraform-github-actions-demo
           github_token: ${{ secrets.GITHUB_TOKEN }}
   tfsec-sarif:
     if: github.event_name == 'push'
