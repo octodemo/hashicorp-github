@@ -73,12 +73,7 @@ jobs:
               body: output
             })
 
-      # Generate Terraform plan report using GitHub's new Job Summaries feature:
-      # https://github.blog/2022-05-09-supercharging-github-actions-with-job-summaries/
-      # 
-      # NOTE: https://github.com/actions/github-script/pull/263
-      # once upstream is updated replace this custom action with the official one above
-      - uses: smaeda-ks/github-script@update-actions-core
+      - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
